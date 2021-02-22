@@ -46,8 +46,12 @@
   border: 1px solid red;
 }  */
 
-body {
-  height: 200vh;
+.remove-selection {
+  user-select: none;
+}
+
+.hidden {
+  display: none;
 }
 
 .drop-down-toggle::after {

@@ -7,9 +7,9 @@ class AppState extends EventEmitter {
   /** @type {Value[]} */
   values = []
 
-  
+
   /** @type {List[]} */
-  lists = [new List("Task 1"), new List("Task 2"), new List("Task 3")]
+  lists = []
 }
 
 export const ProxyState = new Proxy(new AppState(), {
