@@ -27,13 +27,6 @@ class ListsService {
   removeTask(id, taskId) {
     if (window.confirm("Are you sure you want to delete your task?")) {
       //console.log(id, taskId)
-      let temp = ProxyState.lists
-
-      let currList = ProxyState.lists.find(list => list.id == id)
-
-      if (!currList) {
-        return;
-      }
       ProxyState.tasks = ProxyState.tasks.filter(t => t.taskId != taskId)
     }
   }
@@ -45,12 +38,7 @@ class ListsService {
         temp[i].finished = !temp[i].finished
       }
     }
-    this.getTotalTasks(id)
     ProxyState.tasks = temp
-
-  }
-
-  getTotalTasks(listId) {
 
   }
 }
