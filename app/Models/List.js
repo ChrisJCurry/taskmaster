@@ -2,9 +2,9 @@ import { generateId } from '../Utils/GenerateId.js'
 import { ProxyState } from '../AppState.js'
 
 export default class List {
-    constructor(title, tasks = [{}], id = generateId()) {
+    constructor(title, bgColor = "gray", id = generateId()) {
         this.title = title;
-        this.tasks = tasks;
+        this.bgColor = bgColor;
         this.id = id;
     }
 
@@ -15,7 +15,7 @@ export default class List {
     get Template() {
         return /* html */`
         <div class="col-12 col-md-6 col-lg-3 pt-2" id="${this.id}">
-            <div class="px-3 card bg-gray remove-selection">
+            <div class="px-3 card remove-selection" style="background-color:${this.bgColor}">
                 <div class="card-body">
                         <div class="row title-shadow mb-3 d-flex justify-content-between">
                             <div class="col-1 pt-3 p-0">
@@ -41,34 +41,58 @@ export default class List {
                                 <button class="btn bg-red" onclick="app.listsController.delete('${this.id}')">&#10006;</button>
                             </div>
                         </div>
+                        
                         <div class="title-underline"></div>
-                        <div>${this.TaskTemplate}</div>
+                        <div class="curr-tasks">${this.Tasks}</div>
                 </div>
             </div>
         </div>
         `
     }
 
-    get TaskTemplate() {
-        let template = ""
+    get Tasks() {
+        let proxyTasks = ProxyState.tasks
+        let ProxyLists = ProxyState.lists
 
-        let currentList = ProxyState.lists.find(l => l.id == this.id)
-        for (let k = 0; k < currentList.tasks.length; k++) {
-            template += /*html */`
-                    <div class="row py-2">
-                        <div class="col-1">
-                        <h2><i class="gg-check-r hidden" id="check-${currentList.tasks[k].taskId}"></i></h2>
-                        </div>
-                        <div class="col-6" onclick="app.listsController.finishedTask('${this.id}','${currentList.tasks[k].taskId}')">
-                            <h4 class="h-1" id="task-${currentList.tasks[k].taskId}">${currentList.tasks[k].taskName}</h4>
-                        </div>
-                        <div class="col-2 offset-2">    
-                            <button class="btn btn-danger ml-auto" onclick="app.listsController.removeTask('${this.id}', '${k}')">&#10006;</button>
-                        </div>
+
+        //let currList = ProxyState.lists.find(c => c.id == id)
+
+        let amountOfTasks = 0;
+        let currTasks = ProxyState.tasks.filter(t => t.listId == this.id)
+        //console.log("total: ", currTasks)
+        amountOfTasks = currTasks.length
+        let amountOfDone = 0
+
+        let currDoneTasks = currTasks.filter(d => d.finished == true)
+        amountOfDone = currDoneTasks.length
+        let template = ""
+        template += /*html*/`
+        <div class="text-center pb-3">
+            <h2>Tasks completed: ${amountOfDone}/${amountOfTasks}</h2>
+        </div>
+        `
+
+        let currListTasks = proxyTasks.filter(c => c.listId == this.id)
+
+        for (let i = 0; i < currListTasks.length; i++) {
+            template += /*html*/`
+            <div class="row pl-2 ${currListTasks[i].finished ? "text-success" : "text-dark"}" onclick="app.listsController.finishTask('${this.id}','${currListTasks[i].taskId}')">
+                    <div class="col-3 py-2">
+                        <i class="gg-check"></i>
+                    </div>    
+                    <div class="col-6 py-2">
+                        <h4 class="${currListTasks[i].finished ? "finished-text" : ""}">${currListTasks[i].taskName}</h4>
                     </div>
-                    `
+                <div class="col-3 py-2">
+                    <button class="btn btn-primary" onclick="app.listsController.removeTask('${this.id}','${currListTasks[i].taskId}')">&#10006;</button>
+                </div>
+            </div>
+            `
+
         }
 
-        return template
+        return template;
+
+
     }
 }

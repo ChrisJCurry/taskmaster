@@ -14,23 +14,21 @@ function _draw() {
 export default class ListsController {
     constructor() {
         ProxyState.on("lists", _draw)
-
+        ProxyState.on("tasks", _draw)
         _draw()
     }
 
-    setBackground(event) {
-        event.preventDefault()
-        let value = event.target.value
-        listsService.setBackground(value)
-    }
-
-    create(event) {
+    create(event, id) {
         event.preventDefault()
         let form = event.target
         let newTaskList = {
-            taskName: form.title.value,
+            title: form.title.value,
+            bgColor: form.bgColor.value,
+            taskId: generateId(),
+            finished: false
         }
-        listsService.create(newTaskList)
+        //console.log("Title: ", newTaskList.title)
+        listsService.create(newTaskList, id)
     }
 
     delete(id) {
@@ -43,16 +41,22 @@ export default class ListsController {
         let newTask = {
             taskName: form.newTask.value,
             finished: false,
-            taskId: generateId()
+            taskId: generateId(),
+            listId: id
         }
+        //console.log("id:", id)
         listsService.addTask(newTask, id)
+    }
+
+    getTotalTasks(listId) {
+        listsService.getTotalTasks(listId)
     }
 
     removeTask(id, taskId) {
         listsService.removeTask(id, taskId)
     }
 
-    finishedTask(id, taskId) {
-        listsService.finishedTask(id, taskId)
+    finishTask(id, taskId) {
+        listsService.finishTask(id, taskId)
     }
 }

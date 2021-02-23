@@ -42,9 +42,13 @@
   box-sizing: border-box;
 }
 
-/* *{
+ /* *{
   border: 1px solid red;
-}  */
+} */
+
+.finished-text {
+  text-decoration: line-through;
+}
 
 .remove-selection {
   user-select: none;

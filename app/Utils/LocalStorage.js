@@ -3,14 +3,18 @@ import List from "../Models/List.js";
 
 export function saveState() {
     localStorage.setItem('task-master', JSON.stringify({
-        lists: ProxyState.lists
+        lists: ProxyState.lists,
+        tasks: ProxyState.tasks
     }))
 }
 
 export function loadState() {
 
-    let data = JSON.parse(localStorage.getItem('task-master'))
-    if (data) {
-        ProxyState.lists = data.lists.map(oldData => new List(oldData.title, oldData.tasks, oldData.id, oldData.amountOfTasks))
+    let listData = JSON.parse(localStorage.getItem('task-master'))
+    if (listData) {
+        ProxyState.lists = listData.lists.map(oldData => new List(oldData.title, oldData.bgColor, oldData.id))
+        ProxyState.tasks = listData.tasks
     }
+
+
 }
